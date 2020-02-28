@@ -16,9 +16,21 @@ export class YoutubeService {
   constructor( public http: HttpClient ) { }
 
   getVideos(){
-    let url:string =  `${ this.youtubeURL }/playlistItems?part=snippet&maxResults=10&playlistId=${this.playlist}&key=${this.apikey}`;
-    
-    return this.http.get(url).pipe(
+    let url:string =  `${ this.youtubeURL }/playlistItems?part=snippet&maxResults=8&playlistId=${this.playlist}&key=${this.apikey}`;
+    //let url:string =  `${ this.youtubeURL }/playlistItems`;
+    /*
+    let params = new HttpParams();
+    params.set( 'part', 'snippet' );
+    params.set( 'maxResults', '10' );
+    params.set( 'playList', this.playlist );
+    params.set( 'key', this.apikey );
+    */
+    if( this.nextPageToken ){
+      url = `${ url }&pageToken=${ this.nextPageToken }` 
+      //params.set( 'nextPageToken', this.nextPageToken );
+    }
+
+    return this.http.get(url /*, { params }*/ ).pipe(
       map( (resp:any) => {
         this.nextPageToken = resp.nextPageToken;
 
@@ -26,9 +38,10 @@ export class YoutubeService {
         for( let video of resp.items ){
           
           let snippet = video.snippet;
-
+          
           videos.push( snippet );
         }
+
         return videos;
       } ) );
   }
