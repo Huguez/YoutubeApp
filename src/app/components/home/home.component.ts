@@ -8,12 +8,11 @@ import { YoutubeService } from '../../services/youtube.service';
   styles: []
 })
 export class HomeComponent implements OnInit {
+  
   videos:any[] = [];
+
   constructor( public _yts: YoutubeService ) {
-    this._yts.getVideos().subscribe( v => {
-      this.videos = v;
-    });
-    
+    this._yts.getVideos().subscribe( v => { this.videos = v } );
   }
 
   ngOnInit() {
